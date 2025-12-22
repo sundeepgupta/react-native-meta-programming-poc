@@ -19,7 +19,7 @@
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* rn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		249B763B51474CD6179C8547 /* Pods-rn-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rn-macOS.release.xcconfig"; path = "Target Support Files/Pods-rn-macOS/Pods-rn-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		28974041F16888B11DED0F8E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		28974041F16888B11DED0F8E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		514201492437B4B30078DB4F /* rn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = rn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5142014B2437B4B30078DB4F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5142014C2437B4B30078DB4F /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
@@ -67,7 +67,6 @@
 				E7A8E0F2F82766E4E87646E1 /* Pods-rn-macOS.debug.xcconfig */,
 				249B763B51474CD6179C8547 /* Pods-rn-macOS.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -227,7 +226,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native-macos/scripts/react-native-xcode.sh\n";
+			shellScript = "set -e\nWITH_ENVIRONMENT=\"../node_modules/react-native-macos/scripts/xcode/with-environment.sh\"\nif [ -f \"$WITH_ENVIRONMENT\" ]; then\n  . \"$WITH_ENVIRONMENT\" \"../node_modules/react-native-macos/scripts/react-native-xcode.sh\"\nelse\n  # Fallback: source .xcode.env files manually\n  [ -f \"$PODS_ROOT/../.xcode.env\" ] && . \"$PODS_ROOT/../.xcode.env\"\n  [ -f \"$PODS_ROOT/../.xcode.env.local\" ] && . \"$PODS_ROOT/../.xcode.env.local\"\n  ../node_modules/react-native-macos/scripts/react-native-xcode.sh\nfi\n";
 		};
 		1A938104A937498D81B3BD3B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -293,7 +292,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native-macos/scripts/react-native-xcode.sh\n";
+			shellScript = "set -e\nWITH_ENVIRONMENT=\"../node_modules/react-native-macos/scripts/xcode/with-environment.sh\"\nif [ -f \"$WITH_ENVIRONMENT\" ]; then\n  . \"$WITH_ENVIRONMENT\" \"../node_modules/react-native-macos/scripts/react-native-xcode.sh\"\nelse\n  # Fallback: source .xcode.env files manually\n  [ -f \"$PODS_ROOT/../.xcode.env\" ] && . \"$PODS_ROOT/../.xcode.env\"\n  [ -f \"$PODS_ROOT/../.xcode.env.local\" ] && . \"$PODS_ROOT/../.xcode.env.local\"\n  ../node_modules/react-native-macos/scripts/react-native-xcode.sh\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -472,10 +471,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -531,10 +527,7 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = false;
