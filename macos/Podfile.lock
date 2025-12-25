@@ -1260,6 +1260,8 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
+  - react-native-sqlite-2 (3.6.3):
+    - React-Core
   - React-NativeModulesApple (0.79.1):
     - glog
     - React-callinvoker
@@ -1599,6 +1601,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native-macos/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native-macos/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native-macos/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-sqlite-2 (from `../node_modules/react-native-sqlite-2`)
   - React-NativeModulesApple (from `../node_modules/react-native-macos/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-oscompat (from `../node_modules/react-native-macos/ReactCommon/oscompat`)
   - React-perflogger (from `../node_modules/react-native-macos/ReactCommon/reactperflogger`)
@@ -1707,6 +1710,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-macos/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native-macos/ReactCommon/react/nativemodule/microtasks"
+  react-native-sqlite-2:
+    :path: "../node_modules/react-native-sqlite-2"
   React-NativeModulesApple:
     :path: "../node_modules/react-native-macos/ReactCommon/react/nativemodule/core/platform/ios"
   React-oscompat:
@@ -1810,6 +1815,7 @@ SPEC CHECKSUMS:
   React-logger: a1f51b7bdc5a3db2d061fd0a2b9f8dc88f5b6acb
   React-Mapbuffer: aef8d3c63179ddeac7e87df71f10f754940efb30
   React-microtasksnativemodule: 7d192e6c87532e772c21812d33d43e28e331e466
+  react-native-sqlite-2: ee4c7269594dc3835643103bbf1de60850902511
   React-NativeModulesApple: ef78447172926a51e533e8e678d9a13fbdbcfaf6
   React-oscompat: a9fa16a352b238f4c293ca5fd669e2cf0bc11457
   React-perflogger: 087bcc2cee21fb8f2d098b94514a629a69081d6d
