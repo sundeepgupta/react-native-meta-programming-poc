@@ -1,115 +1,202 @@
-import React from 'react';
+import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
-  ScrollView,
-  StatusBar,
+  SafeAreaView,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
+  Pressable,
+  FlatList,
   View,
 } from 'react-native';
+import type {Product, ProductID} from './models/Product';
+import {createProduct} from './models/Product';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export default function App(): React.JSX.Element {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [id, setId] = useState('');
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [editingId, setEditingId] = useState<ProductID | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  function resetForm() {
+    setId('');
+    setName('');
+    setPrice('');
+    setEditingId(null);
+    setError(null);
+  }
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  function startEdit(product: Product) {
+    setEditingId(product.id);
+    setId(product.id);
+    setName(product.name);
+    setPrice(String(product.price));
+    setError(null);
+  }
+
+  function saveProduct() {
+    setError(null);
+
+    const trimmedId = id.trim();
+    if (!editingId && products.some(p => p.id === trimmedId)) {
+      setError('Product ID already exists');
+      return;
+    }
+
+    let product: Product;
+    try {
+      product = createProduct(id as ProductID, name, Number(price));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Invalid input');
+      return;
+    }
+
+    if (editingId) {
+      setProducts(items =>
+        items.map(existingProduct => (existingProduct.id === editingId ? product : existingProduct))
+      );
+    } else {
+      setProducts(previousValue => [product, ...previousValue]);
+    }
+
+    resetForm();
+  }
+
+  function deleteProduct(id: ProductID) {
+    const newProducts = products.filter(p => p.id !== id);
+    setProducts(newProducts);
+    if (editingId === id) {
+      resetForm();
+    }
+  }
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Products</Text>
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+      <View style={styles.form}>
+        <Text style={styles.label}>ID</Text>
+        <TextInput
+          style={[styles.input, editingId ? styles.inputDisabled : null]}
+          value={id}
+          onChangeText={setId}
+          placeholder="sku-123"
+          editable={!editingId}
+          autoCapitalize="none"
+        />
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          placeholder="iPhone cable"
+        />
 
-  const safePadding = '5%';
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          value={price}
+          onChangeText={setPrice}
+          placeholder="12.99"
+          keyboardType="decimal-pad"
+        />
 
-  return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <View style={styles.actions}>
+          <Pressable style={styles.primaryButton} onPress={saveProduct}>
+            <Text style={styles.primaryButtonText}>
+              {editingId ? 'Update' : 'Create'}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <FlatList
+        data={products}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={<Text style={styles.empty}>No Products yet</Text>}
+        contentContainerStyle={styles.listContent}
+        renderItem={({item}) => (
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+            </View>
+            <Text style={styles.meta}>ID: {item.id}</Text>
+            <View style={styles.cardActions}>
+              <Pressable
+                style={styles.smallButton}
+                onPress={() => startEdit(item)}
+              >
+                <Text style={styles.smallButtonText}>Edit</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.smallButton, styles.dangerButton]}
+                onPress={() => deleteProduct(item.id)}
+              >
+                <Text style={styles.smallButtonText}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
       />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {flex: 1, backgroundColor: '#F8F5F0', padding: 16},
+  title: {fontSize: 28, fontWeight: '700', marginBottom: 12},
+  form: {backgroundColor: '#FFF', padding: 12, borderRadius: 10},
+  label: {fontSize: 14, fontWeight: '600', marginTop: 10},
+  input: {
+    borderWidth: 1,
+    borderColor: '#D6CFC7',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginTop: 6,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  inputDisabled: {backgroundColor: '#EFEAE4', color: '#666'},
+  error: {color: '#B42318', marginTop: 8},
+  actions: {flexDirection: 'row', gap: 10, marginTop: 12},
+  primaryButton: {
+    backgroundColor: '#1F2A44',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  primaryButtonText: {color: '#FFF', fontWeight: '700'},
+  secondaryButton: {
+    backgroundColor: '#E7E0D8',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
-  highlight: {
-    fontWeight: '700',
+  secondaryButtonText: {fontWeight: '700', color: '#1F2A44'},
+  listContent: {paddingVertical: 12},
+  empty: {marginTop: 16, color: '#666'},
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 10,
   },
+  cardHeader: {flexDirection: 'row', justifyContent: 'space-between'},
+  name: {fontSize: 18, fontWeight: '600'},
+  price: {fontSize: 16, fontWeight: '600'},
+  meta: {color: '#666', marginTop: 4},
+  cardActions: {flexDirection: 'row', gap: 8, marginTop: 10},
+  smallButton: {
+    backgroundColor: '#1F2A44',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+  },
+  dangerButton: {backgroundColor: '#B42318'},
+  smallButtonText: {color: '#FFF', fontWeight: '600'},
 });
-
-export default App;
