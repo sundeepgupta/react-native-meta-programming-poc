@@ -72,13 +72,8 @@ export default function App(): React.JSX.Element {
     }
   }
 
-  function handleCardPress(product: Product, event: any) {
-      console.log('handleCardPress', event);
-      debugger;
-    const clickCount = event.nativeEvent.clickCount;
-    if (clickCount === 2) {
-      console.log('Double clicked on', product.id);
-    }
+  function handleCardPress(product: Product) {
+
   }
 
   return (
@@ -130,7 +125,7 @@ export default function App(): React.JSX.Element {
         ListEmptyComponent={<Text style={styles.empty}>No Products yet</Text>}
         contentContainerStyle={styles.listContent}
         renderItem={({item}) => (
-          <Pressable style={styles.card} onPress={event => handleCardPress(item, event)}>
+          <Pressable style={styles.card} onPress={() => handleCardPress(item)}>
             <View style={styles.cardHeader}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>${item.price.toFixed(2)}</Text>
