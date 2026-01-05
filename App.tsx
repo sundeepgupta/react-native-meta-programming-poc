@@ -72,6 +72,15 @@ export default function App(): React.JSX.Element {
     }
   }
 
+  function handleCardPress(product: Product, event: any) {
+      console.log('handleCardPress', event);
+      debugger;
+    const clickCount = event.nativeEvent.clickCount;
+    if (clickCount === 2) {
+      console.log('Double clicked on', product.id);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Products</Text>
@@ -121,7 +130,7 @@ export default function App(): React.JSX.Element {
         ListEmptyComponent={<Text style={styles.empty}>No Products yet</Text>}
         contentContainerStyle={styles.listContent}
         renderItem={({item}) => (
-          <View style={styles.card}>
+          <Pressable style={styles.card} onPress={event => handleCardPress(item, event)}>
             <View style={styles.cardHeader}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>${item.price.toFixed(2)}</Text>
@@ -141,7 +150,7 @@ export default function App(): React.JSX.Element {
                 <Text style={styles.smallButtonText}>Delete</Text>
               </Pressable>
             </View>
-          </View>
+          </Pressable>
         )}
       />
     </SafeAreaView>
