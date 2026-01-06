@@ -9,8 +9,8 @@ import {
   FlatList,
   View,
 } from 'react-native';
-import type {Product, ProductID} from './models/Product';
-import {createProduct} from './models/Product';
+import type {Product, ProductID} from './models/product';
+import {createProduct} from './models/product';
 
 export default function App(): React.JSX.Element {
   const [products, setProducts] = useState<Product[]>([]);
